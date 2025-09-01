@@ -7,6 +7,7 @@ import './App.css';
 
 function App() {
     const [isGameActive, setIsGameActive] = useState(false);
+    const [isInstructionsCollapsed, setIsInstructionsCollapsed] = useState(false);
 
     const handleGameStart = () => {
         setIsGameActive(true);
@@ -16,32 +17,33 @@ function App() {
         setIsGameActive(false);
     };
 
+    const toggleInstructions = () => {
+        setIsInstructionsCollapsed(!isInstructionsCollapsed);
+    };
+
     return (
         <div className="app">
-            {/*<header className="app__header">*/}
-            {/*    <h1>🎲 Кубик Рубика</h1>*/}
-            {/* </header>*/}
-
             <main className="app__main">
                 <div className="app__layout">
-                    {/* Інструкції */}
-                    <aside className="sidebar">
-                        <Instructions />
-                    </aside>
+                    {/* Instructions - БЕЗ aside обгортки */}
+                    <Instructions
+                        isCollapsed={isInstructionsCollapsed}
+                        onToggle={toggleInstructions}
+                    />
 
-                    {/* Кубик */}
+                    {/* Cube */}
                     <section className="game-area">
                         <RubikCube onGameStart={handleGameStart} />
                     </section>
 
-                    {/* Контроли */}
-                    <aside className="sidebar">
+                    {/* Controls */}
+                    <div className="sidebar">
                         <Controls />
                         <Timer
                             isActive={isGameActive}
                             onReset={handleGameReset}
                         />
-                    </aside>
+                    </div>
                 </div>
             </main>
         </div>

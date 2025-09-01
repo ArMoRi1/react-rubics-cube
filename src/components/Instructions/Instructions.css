@@ -1,25 +1,103 @@
-/* Instructions component styles */
+/* Instructions component styles - Collapsible sidebar */
 .instructions {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    width: 300px;
+    flex-shrink: 0;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.instructions.collapsed {
+    width: 60px;
+}
+
+/* Toggle button */
+.instructions__toggle-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.instructions.collapsed .instructions__toggle-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+}
+
+.instructions__toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.instructions.collapsed .instructions__toggle-btn:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.toggle-text {
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 4px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.instructions__toggle-btn:hover .toggle-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Content container */
+.instructions__content {
+    flex: 1;
+    overflow-y: auto;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.instructions.collapsed .instructions__content {
+    opacity: 0;
+    transform: translateX(-100%);
+    pointer-events: none;
 }
 
 .instructions__header {
     padding: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
     border-radius: 16px 16px 0 0;
-}
-
-.instructions__header:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    transform: translateY(-1px);
+    margin-bottom: 0;
 }
 
 .instructions__header h3 {
@@ -31,39 +109,17 @@
     gap: 8px;
 }
 
-.instructions__toggle {
-    font-size: 1.2rem;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0.8;
-}
-
-.instructions__toggle.expanded {
-    transform: rotate(180deg);
-}
-
-.instructions__content {
-    flex: 1;
+.instructions__sections {
     padding: 20px;
-    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .instructions__section {
-    margin-bottom: 25px;
-    padding: 15px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
+    padding: 15px;
     border-left: 4px solid #667eea;
     transition: all 0.3s ease;
 }
@@ -72,10 +128,6 @@
     background: rgba(255, 255, 255, 0.95);
     transform: translateX(5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.instructions__section:last-child {
-    margin-bottom: 0;
 }
 
 .instructions__section h4 {
@@ -107,7 +159,54 @@
     font-size: 0.9rem;
 }
 
-.instructions__section li strong {
+/* Control group styling */
+.control-group {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: rgba(240, 240, 240, 0.8);
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+}
+
+.control-group h5 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #444;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.control-group ul {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.control-group li {
+    margin-bottom: 6px;
+    line-height: 1.4;
+    color: #555;
+    font-size: 0.85rem;
+}
+
+.control-group kbd {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-right: 6px;
+}
+
+.control-group strong {
     color: #333;
     font-weight: 600;
 }
@@ -174,6 +273,15 @@
 
 /* Адаптивність */
 @media (max-width: 768px) {
+    .instructions {
+        width: 100%;
+    }
+
+    .instructions.collapsed {
+        width: 100%;
+        height: 50px;
+    }
+
     .instructions__header {
         padding: 15px;
     }
@@ -182,13 +290,13 @@
         font-size: 1.2rem;
     }
 
-    .instructions__content {
+    .instructions__sections {
         padding: 15px;
+        gap: 15px;
     }
 
     .instructions__section {
         padding: 12px;
-        margin-bottom: 20px;
     }
 
     .instructions__section h4 {
@@ -214,13 +322,13 @@
         font-size: 1.1rem;
     }
 
-    .instructions__content {
+    .instructions__sections {
         padding: 12px;
+        gap: 12px;
     }
 
     .instructions__section {
         padding: 10px;
-        margin-bottom: 15px;
     }
 
     .color-item span {
