@@ -1,0 +1,85 @@
+/* Controls component styles */
+.rubik-cube__sidebar {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    background: white;
+    border-right: 2px solid #000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.function-item {
+    margin-bottom: 30px;
+}
+
+.function-item h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.function-item button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.function-item button:hover:not(:disabled) {
+    background: #e8e8e8;
+    transform: translateY(-1px);
+}
+
+.function-item button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.function-item button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f0f0f0;
+}
+
+.moves-counter {
+    background: #f0f0f0;
+    padding: 15px;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    border: 1px solid #ddd;
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 768px) {
+    .rubik-cube__sidebar {
+        border-right: none;
+        border-bottom: 2px solid #000;
+        padding: 15px;
+    }
+
+    .function-item {
+        margin-bottom: 15px;
+    }
+
+    .function-item h3 {
+        font-size: 14px;
+    }
+
+    .function-item button {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .moves-counter {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

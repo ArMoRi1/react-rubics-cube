@@ -1,0 +1,95 @@
+/* Timer component styles */
+.timer {
+    background: white;
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.timer__display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #333;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    letter-spacing: 2px;
+}
+
+.timer__controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.timer__button {
+    padding: 12px 24px;
+    border: 2px solid #333;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.timer__button.start {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.timer__button.start:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.timer__button.stop {
+    background: #f44336;
+    color: white;
+    border-color: #f44336;
+}
+
+.timer__button.stop:hover {
+    background: #da190b;
+    transform: translateY(-2px);
+}
+
+.timer__button.reset {
+    background: #ff9800;
+    color: white;
+    border-color: #ff9800;
+}
+
+.timer__button.reset:hover {
+    background: #e68900;
+    transform: translateY(-2px);
+}
+
+.timer__button:active {
+    transform: translateY(0);
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .timer {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .timer__display {
+        font-size: 2rem;
+        padding: 12px;
+    }
+
+    .timer__button {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 70px;
+    }
+}

@@ -7,38 +7,196 @@
 body {
   font-family: 'Arial', sans-serif;
   background: #1a1a2e;
-  overflow-x: hidden;
+  overflow: hidden; /* Забороняємо прокрутку */
+}
+
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .app__header {
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   color: white;
   background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
 
 .app__header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  margin-bottom: 5px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .app__header p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   opacity: 0.9;
 }
 
 .app__main {
-  min-height: calc(100vh - 120px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 10px;
+  gap: 10px;
 }
 
-/* Адаптивність */
-@media (max-width: 768px) {
-  .app__header h1 {
-    font-size: 2rem;
+/* Layout з 3 колонками */
+.app__layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) 1fr minmax(280px, 320px);
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Ліва панель - Instructions */
+.app__sidebar {
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow-y: auto;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Центральна область - RubikCube */
+.app__game-area {
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Права панель - Controls (третій aside без класу) */
+.app__layout > aside:last-child {
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow-y: auto;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Секція таймера (section без класу) */
+.app__main > section {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* Кастомні скролбари для бічних панелей */
+.app__sidebar::-webkit-scrollbar,
+.app__layout > aside:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app__sidebar::-webkit-scrollbar-track,
+.app__layout > aside:last-child::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.app__sidebar::-webkit-scrollbar-thumb,
+.app__layout > aside:last-child::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.app__sidebar::-webkit-scrollbar-thumb:hover,
+.app__layout > aside:last-child::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Адаптивність для планшетів */
+@media (max-width: 1200px) {
+  .app__layout {
+    grid-template-columns: 260px 1fr 260px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app__layout {
+    grid-template-columns: 240px 1fr 240px;
+    gap: 8px;
   }
 
-  .app__header p {
-    font-size: 1rem;
+  .app__main {
+    padding: 8px;
+    gap: 8px;
   }
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 768px) {
+  .app__main {
+    padding: 5px;
+    gap: 5px;
+  }
+
+  .app__layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(120px, 200px) 1fr minmax(120px, 200px);
+    gap: 5px;
+  }
+
+  /* На мобільних: Instructions зверху, Cube в центрі, Controls знизу */
+  .app__sidebar {
+    grid-row: 1;
+    max-height: 200px;
+  }
+
+  .app__game-area {
+    grid-row: 2;
+    min-height: 300px;
+  }
+
+  .app__layout > aside:last-child {
+    grid-row: 3;
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app__main {
+    padding: 3px;
+    gap: 3px;
+  }
+
+  .app__layout {
+    gap: 3px;
+    grid-template-rows: minmax(100px, 150px) 1fr minmax(100px, 150px);
+  }
+
+  .app__sidebar {
+    max-height: 150px;
+  }
+
+  .app__layout > aside:last-child {
+    max-height: 150px;
+  }
+
+  .app__game-area {
+    min-height: 250px;
+  }
+}
+
+/* Додаткові ефекти */
+.app__sidebar,
+.app__game-area,
+.app__layout > aside:last-child {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
