@@ -16,26 +16,26 @@ const Controls = ({
     return (
         <div className="controls">
             <div className="controls__header">
-                <h3>🎮 Контроли</h3>
+                <h3>🎮 Controls</h3>
             </div>
 
             <div className="controls__content">
                 <div className="function-group">
-                    <h4>🎯 Основні дії</h4>
+                    <h4>🎯 Basic actions</h4>
                     <button
                         className="controls__button shuffle"
                         onClick={onShuffle}
                         disabled={isRotating}
                         title="Перемішати кубик"
                     >
-                        🔀 Перемішати
+                        🔀 Scramble
                     </button>
                     <button
                         className="controls__button reset"
                         onClick={onReset}
                         title="Скинути кубик"
                     >
-                        🔄 Скинути
+                        🔄 Reset
                     </button>
                 </div>
 
@@ -45,31 +45,31 @@ const Controls = ({
                         <div className="key-row">
                             <div className="key-item" onClick={() => onFaceRotate?.('U')}>
                                 <kbd>1</kbd>
-                                <span>U (Верх)</span>
+                                <span>U</span>
                             </div>
                             <div className="key-item" onClick={() => onFaceRotate?.('R')}>
                                 <kbd>2</kbd>
-                                <span>R (Право)</span>
+                                <span>R</span>
                             </div>
                         </div>
                         <div className="key-row">
                             <div className="key-item" onClick={() => onFaceRotate?.('L')}>
                                 <kbd>3</kbd>
-                                <span>L (Ліво)</span>
+                                <span>L</span>
                             </div>
                             <div className="key-item" onClick={() => onFaceRotate?.('F')}>
                                 <kbd>4</kbd>
-                                <span>F (Перед)</span>
+                                <span>F</span>
                             </div>
                         </div>
                         <div className="key-row">
                             <div className="key-item" onClick={() => onFaceRotate?.('D')}>
                                 <kbd>5</kbd>
-                                <span>D (Низ)</span>
+                                <span>D</span>
                             </div>
                             <div className="key-item" onClick={() => onFaceRotate?.('B')}>
                                 <kbd>6</kbd>
-                                <span>B (Зад)</span>
+                                <span>B</span>
                             </div>
                         </div>
                     </div>
@@ -112,90 +112,78 @@ const Controls = ({
                 </div>
 
                 <div className="function-group">
-                    <h4>🔄 Фронтальна грань</h4>
+                    <h4>🔄 Change front side</h4>
                     <div className="keyboard-controls">
                         <div className="key-row single-key">
                             <div className="key-item" onClick={() => onFrontFaceChange?.('up')}>
                                 <kbd>W</kbd>
-                                <span>Вгору</span>
-                            </div>
-                        </div>
-                        <div className="key-row">
-                            <div className="key-item" onClick={() => onFrontFaceChange?.('left')}>
-                                <kbd>A</kbd>
-                                <span>Ліворуч</span>
-                            </div>
-                            <div className="key-item" onClick={() => onFrontFaceChange?.('right')}>
-                                <kbd>D</kbd>
-                                <span>Праворуч</span>
+                                <span>move X`</span>
                             </div>
                         </div>
                         <div className="key-row single-key">
                             <div className="key-item" onClick={() => onFrontFaceChange?.('down')}>
                                 <kbd>S</kbd>
-                                <span>Вниз</span>
+                                <span>move X</span>
+                            </div>
+                        </div>
+                        <div className="key-row single-key">
+                            <div className="key-item" onClick={() => onFrontFaceChange?.('right')}>
+                                <kbd>D</kbd>
+                                <span>move Y`</span>
+                            </div>
+                        </div>
+                        <div className="key-row single-key">
+                            <div className="key-item" onClick={() => onFrontFaceChange?.('left')}>
+                                <kbd>A</kbd>
+                                <span>move Y</span>
+                            </div>
+                        </div>
+                        <div className="key-row single-key">
+                            <div className="key-item" onClick={() => onFrontFaceChange?.('right')}>
+                                <kbd>Q</kbd>
+                                <span>move Z`</span>
+                            </div>
+                        </div>
+                        <div className="key-row single-key">
+                            <div className="key-item" onClick={() => onFrontFaceChange?.('down')}>
+                                <kbd>E</kbd>
+                                <span>move Z</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="function-group">
-                    <h4>📹 Камера</h4>
+                    <h4>📹 Camera position</h4>
                     <div className="keyboard-controls">
                         <div className="key-row single-key">
                             <div className="key-item" onClick={() => onCameraMove?.('up')}>
                                 <kbd>↑</kbd>
-                                <span>Вгору</span>
+                                <span>Up</span>
                             </div>
                         </div>
-                        <div className="key-row">
+                        <div className="key-row single-key">
                             <div className="key-item" onClick={() => onCameraMove?.('left')}>
                                 <kbd>←</kbd>
-                                <span>Ліворуч</span>
+                                <span>Left</span>
                             </div>
+                        </div>
+                        <div className="key-row single-key">
                             <div className="key-item" onClick={() => onCameraMove?.('right')}>
                                 <kbd>→</kbd>
-                                <span>Праворуч</span>
+                                <span>Right</span>
                             </div>
                         </div>
                         <div className="key-row single-key">
                             <div className="key-item" onClick={() => onCameraMove?.('down')}>
                                 <kbd>↓</kbd>
-                                <span>Вниз</span>
+                                <span>Down</span>
                             </div>
                         </div>
                         <div className="camera-note">
-                            <span>🖱️ Або використовуйте мишу для обертання</span>
+                            <span>🖱️ Or you can use your mouse to move the camera</span>
                         </div>
                     </div>
-                </div>
-
-                <div className="function-group">
-                    <h4>🔄 Повороти осей</h4>
-                    <button
-                        className="controls__button"
-                        onClick={onRotateX}
-                        disabled={isRotating}
-                        title="Поворот навколо осі X"
-                    >
-                        ↕️ Поворот X
-                    </button>
-                    <button
-                        className="controls__button"
-                        onClick={onRotateY}
-                        disabled={isRotating}
-                        title="Поворот навколо осі Y"
-                    >
-                        ↔️ Поворот Y
-                    </button>
-                    <button
-                        className="controls__button"
-                        onClick={onRotateZ}
-                        disabled={isRotating}
-                        title="Поворот навколо осі Z"
-                    >
-                        🔄 Поворот Z
-                    </button>
                 </div>
 
                 <div className="moves-counter">

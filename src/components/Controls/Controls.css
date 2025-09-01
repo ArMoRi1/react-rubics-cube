@@ -258,7 +258,7 @@
 }
 
 .key-row.single-key .key-item {
-    max-width: 150px;
+    /*max-width: 150px;*/
 }
 
 /* Клікабельність для key-item */
