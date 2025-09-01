@@ -19,30 +19,31 @@ function App() {
     return (
         <div className="app">
             {/*<header className="app__header">*/}
-            {/*    <h1>3D Rubik's Cube</h1>*/}
-            {/*    <p>Інтерактивний кубик Рубика з Three.js</p>*/}
-            {/*</header>*/}
+            {/*    <h1>🎲 Кубик Рубика</h1>*/}
+            {/* </header>*/}
 
             <main className="app__main">
                 <div className="app__layout">
-                    {/* Ліва колонка з інформацією */}
-                    <aside className="app__sidebar">
+                    {/* Інструкції */}
+                    <aside className="sidebar">
                         <Instructions />
                     </aside>
-                    {/* Основна область з кубиком */}
-                    <section className="app__game-area">
+
+                    {/* Кубик */}
+                    <section className="game-area">
                         <RubikCube onGameStart={handleGameStart} />
                     </section>
-                    <aside>
-                        <Controls/>
+
+                    {/* Контроли */}
+                    <aside className="sidebar">
+                        <Controls />
+                        <Timer
+                            isActive={isGameActive}
+                            onReset={handleGameReset}
+                        />
                     </aside>
                 </div>
-                    <Timer
-                        isActive={isGameActive}
-                        onReset={handleGameReset}
-                    />
             </main>
-
         </div>
     );
 }

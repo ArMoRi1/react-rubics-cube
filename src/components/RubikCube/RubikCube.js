@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import './RubikCube.css';
 
@@ -8,6 +8,8 @@ const RubikCube = ({ onGameStart }) => {
     const rendererRef = useRef();
     const cubeGroupRef = useRef();
     const cameraRef = useRef();
+    const [isLoading, setIsLoading] = useState(true);
+    const [isInteracting, setIsInteracting] = useState(false);
 
     // Кольори граней кубика - мемоізовані
     const colors = useMemo(() => ({
@@ -70,7 +72,7 @@ const RubikCube = ({ onGameStart }) => {
         const containerHeight = container.clientHeight;
 
         // Робимо квадратний canvas що поміщається в контейнер
-        const size = Math.min(containerWidth - 20, containerHeight - 20, 500);
+        const size = Math.min(containerWidth - 40, containerHeight - 40, 600);
 
         return {
             width: size,
@@ -81,7 +83,7 @@ const RubikCube = ({ onGameStart }) => {
     // Функція налаштування сцени
     const setupScene = useCallback(() => {
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x222222);
+        scene.background = new THREE.Color(0x2c3e50);
 
         const { width, height } = getCanvasSize();
 
@@ -89,16 +91,26 @@ const RubikCube = ({ onGameStart }) => {
         camera.position.set(4, 4, 4);
         camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(width, height);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // Світло
+        // Покращене освітлення
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(5, 5, 5);
+        light.castShadow = true;
+        light.shadow.mapSize.width = 1024;
+        light.shadow.mapSize.height = 1024;
         scene.add(light);
 
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
         scene.add(ambientLight);
+
+        // Підсвічування
+        const pointLight = new THREE.PointLight(0x00cec9, 0.5, 100);
+        pointLight.position.set(-5, 5, 5);
+        scene.add(pointLight);
 
         return { scene, camera, renderer };
     }, [getCanvasSize]);
@@ -131,27 +143,33 @@ const RubikCube = ({ onGameStart }) => {
 
             mouseX = event.clientX;
             mouseY = event.clientY;
+
+            setIsInteracting(true);
         };
 
         const onMouseDown = (event) => {
             isMouseDown = true;
             mouseX = event.clientX;
             mouseY = event.clientY;
+            setIsInteracting(true);
             if (onGameStart) onGameStart();
         };
 
         const onMouseUp = () => {
             isMouseDown = false;
+            setTimeout(() => setIsInteracting(false), 500);
         };
 
         renderer.domElement.addEventListener('mousemove', onMouseMove);
         renderer.domElement.addEventListener('mousedown', onMouseDown);
         renderer.domElement.addEventListener('mouseup', onMouseUp);
+        renderer.domElement.addEventListener('mouseleave', onMouseUp);
 
         return () => {
             renderer.domElement.removeEventListener('mousemove', onMouseMove);
             renderer.domElement.removeEventListener('mousedown', onMouseDown);
             renderer.domElement.removeEventListener('mouseup', onMouseUp);
+            renderer.domElement.removeEventListener('mouseleave', onMouseUp);
         };
     }, [onGameStart]);
 
@@ -159,62 +177,85 @@ const RubikCube = ({ onGameStart }) => {
     useEffect(() => {
         if (!mountRef.current) return;
 
-        // Налаштування сцени
-        const { scene, camera, renderer } = setupScene();
-        sceneRef.current = scene;
-        rendererRef.current = renderer;
-        cameraRef.current = camera;
+        // Показуємо індикатор завантаження
+        setIsLoading(true);
 
-        // Створення кубика
-        const cubeGroup = createRubikCube();
-        cubeGroupRef.current = cubeGroup;
-        scene.add(cubeGroup);
+        // Затримка для плавного ефекту
+        const initTimeout = setTimeout(() => {
+            // Налаштування сцени
+            const { scene, camera, renderer } = setupScene();
+            sceneRef.current = scene;
+            rendererRef.current = renderer;
+            cameraRef.current = camera;
 
-        // Додавання до DOM
-        mountRef.current.appendChild(renderer.domElement);
+            // Створення кубика
+            const cubeGroup = createRubikCube();
+            cubeGroupRef.current = cubeGroup;
+            scene.add(cubeGroup);
 
-        // Додавання контролів миші
-        const removeMouseControls = addMouseControls(renderer, cubeGroup);
+            // Додавання до DOM
+            mountRef.current.appendChild(renderer.domElement);
 
-        // Обробник зміни розміру вікна
-        window.addEventListener('resize', handleResize);
+            // Додавання контролів миші
+            const removeMouseControls = addMouseControls(renderer, cubeGroup);
 
-        // Рендер цикл
-        let animationId;
-        const animate = () => {
-            animationId = requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        };
-        animate();
+            // Обробник зміни розміру вікна
+            window.addEventListener('resize', handleResize);
 
-        // Покращений cleanup
-        return () => {
-            cancelAnimationFrame(animationId);
-            removeMouseControls();
-            window.removeEventListener('resize', handleResize);
+            // Рендер цикл з легким автообертанням
+            let animationId;
+            const animate = () => {
+                animationId = requestAnimationFrame(animate);
 
-            // Більш надійне видалення canvas
-            const canvas = renderer.domElement;
-            if (canvas && canvas.parentNode) {
-                canvas.parentNode.removeChild(canvas);
-            }
+                // Легке автообертання коли не взаємодіють
+                if (!isInteracting) {
+                    cubeGroup.rotation.y += 0.002;
+                }
 
-            renderer.dispose();
+                renderer.render(scene, camera);
+            };
+            animate();
 
-            // Очищення сцени
-            while(scene.children.length > 0) {
-                scene.remove(scene.children[0]);
-            }
-        };
-    }, [setupScene, createRubikCube, addMouseControls, handleResize]);
+            setIsLoading(false);
+
+            // Cleanup функція
+            return () => {
+                cancelAnimationFrame(animationId);
+                removeMouseControls();
+                window.removeEventListener('resize', handleResize);
+
+                // Більш надійне видалення canvas
+                const canvas = renderer.domElement;
+                if (canvas && canvas.parentNode) {
+                    canvas.parentNode.removeChild(canvas);
+                }
+
+                renderer.dispose();
+
+                // Очищення сцени
+                while(scene.children.length > 0) {
+                    scene.remove(scene.children[0]);
+                }
+            };
+        }, 100);
+
+        return () => clearTimeout(initTimeout);
+    }, [setupScene, createRubikCube, addMouseControls, handleResize, isInteracting]);
 
     return (
         <div className="rubik-cube">
             {/* Головна сцена */}
-            <div className="rubik-cube__main">
-                <div className="rubik-cube__scene" ref={mountRef}></div>
+            <div
+                className={`rubik-scene ${isInteracting ? 'interacting' : ''}`}
+                ref={mountRef}
+            >
+                {isLoading && (
+                    <div className="scene-loading">
+                        <div className="spinner"></div>
+                        Завантаження...
+                    </div>
+                )}
             </div>
-
         </div>
     );
 };

@@ -37,22 +37,27 @@ const Timer = ({ isActive, onReset }) => {
     }, [onReset]);
 
     return (
-        <div className="timer">
+        <div className={`timer ${isRunning ? 'running' : ''}`}>
+            <div className="timer__status"></div>
+
             <div className="timer__display">
-                {formatTime(time)}
+                ⏱️ {formatTime(time)}
             </div>
+
             <div className="timer__controls">
                 <button
                     onClick={startStop}
                     className={`timer__button ${isRunning ? 'stop' : 'start'}`}
+                    title={isRunning ? 'Зупинити таймер' : 'Запустити таймер'}
                 >
-                    {isRunning ? 'Стоп' : 'Старт'}
+                    {isRunning ? '⏸️ Стоп' : '▶️ Старт'}
                 </button>
                 <button
                     onClick={resetTimer}
                     className="timer__button reset"
+                    title="Скинути таймер"
                 >
-                    Скинути
+                    🔄 Скинути
                 </button>
             </div>
         </div>
