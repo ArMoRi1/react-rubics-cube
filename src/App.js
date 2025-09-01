@@ -1,24 +1,20 @@
-import logo from './logo.svg';
+import React from 'react';
+import RubikCube from './components/RubikCube/RubikCube';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="app">
+        <header className="app__header">
+          <h1>3D Rubik`s Cube</h1>
+        </header>
+        <main className="app__main">
+            {/*<Controlls/>*/}
+            <RubikCube />
+            {/*<Instructions/>*/}
+            {/*<Timer/>*/}
+        </main>
+      </div>
   );
 }
 
