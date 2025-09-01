@@ -1,64 +1,23 @@
-/* RubikCube component styles */
+/* RubikCube component styles - Спрощена версія */
 .rubik-cube {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
 
-/* Заголовок сцени */
-.scene-header {
-  background: linear-gradient(135deg, #00cec9 0%, #00b894 100%);
-  color: white;
-  padding: 20px;
-  text-align: center;
-  border-radius: 16px 16px 0 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.scene-header:before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.scene-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0;
-}
-
-/* Головна сцена */
+/* Головна сцена - займає весь простір */
 .rubik-scene {
-  flex: 1;
+  height: 100%;
+  width: 100%;
   cursor: grab;
   display: flex;
   align-items: center;
   justify-content: center;
   background: radial-gradient(ellipse at center, #2c3e50 0%, #1a252f 100%);
   position: relative;
-  min-height: 0;
   overflow: hidden;
   transition: all 0.3s ease;
+  border-radius: 16px;
 }
 
 .rubik-scene:active {
@@ -70,10 +29,11 @@
 }
 
 .rubik-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
   max-width: 100%;
   max-height: 100%;
-  width: auto !important;
-  height: auto !important;
+  object-fit: contain;
   border-radius: 8px;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
@@ -81,35 +41,6 @@
 
 .rubik-scene canvas:hover {
   filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
-}
-
-/* Нижня панель з підказками */
-.scene-controls {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 15px 20px;
-  border-radius: 0 0 16px 16px;
-  border-top: 3px solid #00cec9;
-  backdrop-filter: blur(10px);
-  text-align: center;
-  position: relative;
-}
-
-.controls-title {
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 8px;
-  color: #2d3436;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.controls-hint {
-  font-size: 0.9rem;
-  color: #636e72;
-  line-height: 1.4;
-  opacity: 0.8;
 }
 
 /* Спеціальні ефекти для інтерактивності */
@@ -125,6 +56,7 @@
   transform: translate(-50%, -50%);
   opacity: 0;
   animation: pulse-bg 4s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes pulse-bg {
@@ -150,6 +82,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 10;
 }
 
 .scene-loading .spinner {
@@ -166,90 +99,57 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Адаптивність для великих екранів */
-@media (min-width: 1400px) {
-  .scene-title {
-    font-size: 1.8rem;
+/* Тонкі декоративні лінії по краях */
+.rubik-scene:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(0, 206, 201, 0.2);
+  border-radius: 16px;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+}
+
+.rubik-scene:hover:after {
+  border-color: rgba(0, 206, 201, 0.4);
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .rubik-scene canvas {
+    border-radius: 6px;
   }
 
-  .scene-header {
-    padding: 25px;
+  .rubik-scene {
+    border-radius: 12px;
   }
 
-  .scene-controls {
-    padding: 20px 25px;
+  .rubik-scene:after {
+    border-radius: 12px;
   }
 
-  .controls-title {
-    font-size: 1.1rem;
-  }
-
-  .controls-hint {
+  .scene-loading {
     font-size: 1rem;
   }
 }
 
-/* Адаптивність для планшетів */
-@media (max-width: 1200px) {
-  .scene-title {
-    font-size: 1.3rem;
-  }
-
-  .scene-header {
-    padding: 18px;
-  }
-
-  .scene-controls {
-    padding: 12px 18px;
-  }
-}
-
-/* Адаптивність для мобільних */
-@media (max-width: 768px) {
-  .scene-title {
-    font-size: 1.2rem;
-    letter-spacing: 0.5px;
-  }
-
-  .scene-header {
-    padding: 15px;
-  }
-
-  .scene-controls {
-    padding: 12px 15px;
-  }
-
-  .controls-title {
+@media (max-width: 480px) {
+  .scene-loading {
     font-size: 0.9rem;
   }
 
-  .controls-hint {
-    font-size: 0.8rem;
-  }
-
-  .rubik-scene canvas {
-    border-radius: 6px;
+  .scene-loading .spinner {
+    width: 25px;
+    height: 25px;
+    border-width: 2px;
   }
 }
 
-@media (max-width: 480px) {
-  .scene-title {
-    font-size: 1.1rem;
-  }
-
-  .scene-header {
-    padding: 12px;
-  }
-
-  .scene-controls {
-    padding: 10px 12px;
-  }
-
-  .controls-title {
-    font-size: 0.85rem;
-  }
-
-  .controls-hint {
-    font-size: 0.75rem;
-  }
+/* Плавна анімація для зміни розмірів */
+.rubik-scene,
+.rubik-scene canvas {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

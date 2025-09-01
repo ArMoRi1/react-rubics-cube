@@ -8,6 +8,8 @@ const RubikCube = ({ onGameStart }) => {
     const rendererRef = useRef();
     const cubeGroupRef = useRef();
     const cameraRef = useRef();
+    const animationIdRef = useRef();
+    const cleanupRef = useRef();
     const [isLoading, setIsLoading] = useState(true);
     const [isInteracting, setIsInteracting] = useState(false);
 
@@ -71,13 +73,11 @@ const RubikCube = ({ onGameStart }) => {
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
 
-        // Робимо квадратний canvas що поміщається в контейнер
-        const size = Math.min(containerWidth - 40, containerHeight - 40, 600);
+        // Використовуємо весь доступний простір з невеликим відступом
+        const width = containerWidth - 20;
+        const height = containerHeight - 20;
 
-        return {
-            width: size,
-            height: size
-        };
+        return { width, height };
     }, []);
 
     // Функція налаштування сцени
@@ -173,74 +173,134 @@ const RubikCube = ({ onGameStart }) => {
         };
     }, [onGameStart]);
 
+    // Функція очищення
+    const cleanup = useCallback(() => {
+        // Зупиняємо анімацію
+        if (animationIdRef.current) {
+            cancelAnimationFrame(animationIdRef.current);
+            animationIdRef.current = null;
+        }
+
+        // Видаляємо обробники подій
+        if (cleanupRef.current) {
+            cleanupRef.current();
+            cleanupRef.current = null;
+        }
+
+        // Видаляємо обробник resize
+        window.removeEventListener('resize', handleResize);
+
+        // Видаляємо canvas з DOM
+        if (rendererRef.current && rendererRef.current.domElement) {
+            const canvas = rendererRef.current.domElement;
+            if (canvas.parentNode === mountRef.current) {
+                mountRef.current.removeChild(canvas);
+            }
+        }
+
+        // Очищуємо Three.js ресурси
+        if (rendererRef.current) {
+            rendererRef.current.dispose();
+            rendererRef.current = null;
+        }
+
+        // Очищуємо сцену
+        if (sceneRef.current) {
+            while(sceneRef.current.children.length > 0) {
+                const child = sceneRef.current.children[0];
+                sceneRef.current.remove(child);
+
+                // Очищуємо geometry та material
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach(material => material.dispose());
+                    } else {
+                        child.material.dispose();
+                    }
+                }
+            }
+            sceneRef.current = null;
+        }
+
+        // Очищуємо референси
+        cameraRef.current = null;
+        cubeGroupRef.current = null;
+    }, [handleResize]);
+
     // Головний useEffect для ініціалізації
     useEffect(() => {
         if (!mountRef.current) return;
+
+        // Очищуємо попередню сцену перед створенням нової
+        cleanup();
 
         // Показуємо індикатор завантаження
         setIsLoading(true);
 
         // Затримка для плавного ефекту
         const initTimeout = setTimeout(() => {
-            // Налаштування сцени
-            const { scene, camera, renderer } = setupScene();
-            sceneRef.current = scene;
-            rendererRef.current = renderer;
-            cameraRef.current = camera;
+            try {
+                // Налаштування сцени
+                const { scene, camera, renderer } = setupScene();
+                sceneRef.current = scene;
+                rendererRef.current = renderer;
+                cameraRef.current = camera;
 
-            // Створення кубика
-            const cubeGroup = createRubikCube();
-            cubeGroupRef.current = cubeGroup;
-            scene.add(cubeGroup);
+                // Створення кубика
+                const cubeGroup = createRubikCube();
+                cubeGroupRef.current = cubeGroup;
+                scene.add(cubeGroup);
 
-            // Додавання до DOM
-            mountRef.current.appendChild(renderer.domElement);
-
-            // Додавання контролів миші
-            const removeMouseControls = addMouseControls(renderer, cubeGroup);
-
-            // Обробник зміни розміру вікна
-            window.addEventListener('resize', handleResize);
-
-            // Рендер цикл з легким автообертанням
-            let animationId;
-            const animate = () => {
-                animationId = requestAnimationFrame(animate);
-
-                // Легке автообертання коли не взаємодіють
-                if (!isInteracting) {
-                    cubeGroup.rotation.y += 0.002;
+                // Додавання до DOM
+                if (mountRef.current && !mountRef.current.contains(renderer.domElement)) {
+                    mountRef.current.appendChild(renderer.domElement);
                 }
 
-                renderer.render(scene, camera);
-            };
-            animate();
+                // Додавання контролів миші
+                const removeMouseControls = addMouseControls(renderer, cubeGroup);
+                cleanupRef.current = removeMouseControls;
 
-            setIsLoading(false);
+                // Обробник зміни розміру вікна
+                window.addEventListener('resize', handleResize);
 
-            // Cleanup функція
-            return () => {
-                cancelAnimationFrame(animationId);
-                removeMouseControls();
-                window.removeEventListener('resize', handleResize);
+                // Рендер цикл з легким автообертанням
+                const animate = () => {
+                    animationIdRef.current = requestAnimationFrame(animate);
 
-                // Більш надійне видалення canvas
-                const canvas = renderer.domElement;
-                if (canvas && canvas.parentNode) {
-                    canvas.parentNode.removeChild(canvas);
-                }
+                    // Легке автообертання коли не взаємодіють
+                    if (!isInteracting && cubeGroupRef.current) {
+                        cubeGroupRef.current.rotation.y += 0.002;
+                    }
 
-                renderer.dispose();
+                    if (rendererRef.current && sceneRef.current && cameraRef.current) {
+                        rendererRef.current.render(sceneRef.current, cameraRef.current);
+                    }
+                };
+                animate();
 
-                // Очищення сцени
-                while(scene.children.length > 0) {
-                    scene.remove(scene.children[0]);
-                }
-            };
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error initializing Three.js scene:', error);
+                setIsLoading(false);
+            }
         }, 100);
 
-        return () => clearTimeout(initTimeout);
-    }, [setupScene, createRubikCube, addMouseControls, handleResize, isInteracting]);
+        return () => {
+            clearTimeout(initTimeout);
+            cleanup();
+        };
+    }, []); // Порожній масив залежностей!
+
+    // Окремий useEffect для resize
+    useEffect(() => {
+        const resizeHandler = () => {
+            handleResize();
+        };
+
+        window.addEventListener('resize', resizeHandler);
+        return () => window.removeEventListener('resize', resizeHandler);
+    }, [handleResize]);
 
     return (
         <div className="rubik-cube">
