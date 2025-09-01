@@ -40,7 +40,7 @@ const Controls = ({
                 </div>
 
                 <div className="function-group">
-                    <h4>🔄 Повороти граней</h4>
+                    <h4>🔄 Face rotations</h4>
                     <div className="keyboard-controls">
                         <div className="key-row">
                             <div className="key-item" onClick={() => onFaceRotate?.('U')}>
@@ -76,7 +76,7 @@ const Controls = ({
                 </div>
 
                 <div className="function-group">
-                    <h4>↩️ Повороти назад</h4>
+                    <h4>↩️ Counter-clockwise rotation</h4>
                     <div className="keyboard-controls">
                         <div className="key-row">
                             <div className="key-item" onClick={() => onFaceRotate?.('U\'')}>

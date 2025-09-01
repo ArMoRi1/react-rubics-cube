@@ -59,7 +59,7 @@ const Instructions = ({ isCollapsed, onToggle }) => {
                         </div>
 
                         <div className="control-group">
-                            <h5>🔄 Change Front Side</h5>
+                            <h5>🔄 Change Front Face</h5>
                             <ul>
                                 <li><kbd>W</kbd> - move X' (rotate around X backwards)</li>
                                 <li><kbd>S</kbd> - move X (rotate around X forward)</li>
