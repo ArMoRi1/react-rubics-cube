@@ -24,8 +24,8 @@ function App() {
     return (
         <div className="app">
             <main className="app__main">
-                <div className="app__layout">
-                    {/* Instructions - БЕЗ aside обгортки */}
+                <div className={`app__layout ${isInstructionsCollapsed ? 'instructions-collapsed' : ''}`}>
+                    {/* Instructions */}
                     <Instructions
                         isCollapsed={isInstructionsCollapsed}
                         onToggle={toggleInstructions}

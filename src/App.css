@@ -51,14 +51,20 @@ body {
   gap: 20px;
 }
 
-/* Layout з 3 колонками */
+/* Layout з 3 колонками - ВИПРАВЛЕНО */
 .app__layout {
   display: grid;
-  grid-template-columns: 300px 1fr 300px;
+  grid-template-columns: minmax(60px, 300px) 1fr 300px;
   gap: 20px;
   flex: 1;
   overflow: hidden;
   min-height: 0;
+  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Коли інструкції згорнуті */
+.app__layout.instructions-collapsed {
+  grid-template-columns: 60px 1fr 300px;
 }
 
 /* Бічні панелі - розтягуються на всю висоту */
@@ -121,8 +127,12 @@ body {
 /* Адаптивність для планшетів */
 @media (max-width: 1200px) {
   .app__layout {
-    grid-template-columns: 280px 1fr 280px;
+    grid-template-columns: minmax(60px, 280px) 1fr 280px;
     gap: 15px;
+  }
+
+  .app__layout.instructions-collapsed {
+    grid-template-columns: 60px 1fr 280px;
   }
 
   .app__main {
@@ -133,8 +143,12 @@ body {
 
 @media (max-width: 1024px) {
   .app__layout {
-    grid-template-columns: 250px 1fr 250px;
+    grid-template-columns: minmax(60px, 250px) 1fr 250px;
     gap: 12px;
+  }
+
+  .app__layout.instructions-collapsed {
+    grid-template-columns: 60px 1fr 250px;
   }
 
   .app__main {
@@ -171,6 +185,11 @@ body {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
     gap: 10px;
+  }
+
+  .app__layout.instructions-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
   }
 
   /* Порядок елементів на мобільних */
